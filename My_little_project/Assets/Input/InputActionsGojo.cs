@@ -44,6 +44,15 @@ public partial class @InputActionsGojo: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Shoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""cdeac800-5e2b-4211-b568-d90b0e802c9a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -244,6 +253,17 @@ public partial class @InputActionsGojo: IInputActionCollection2, IDisposable
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a5861f80-63b4-4fe8-a673-c25c4a859c3e"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -254,6 +274,7 @@ public partial class @InputActionsGojo: IInputActionCollection2, IDisposable
         m_Gojo = asset.FindActionMap("Gojo", throwIfNotFound: true);
         m_Gojo_Move = m_Gojo.FindAction("Move", throwIfNotFound: true);
         m_Gojo_Rotate = m_Gojo.FindAction("Rotate", throwIfNotFound: true);
+        m_Gojo_Shoot = m_Gojo.FindAction("Shoot", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -317,12 +338,14 @@ public partial class @InputActionsGojo: IInputActionCollection2, IDisposable
     private List<IGojoActions> m_GojoActionsCallbackInterfaces = new List<IGojoActions>();
     private readonly InputAction m_Gojo_Move;
     private readonly InputAction m_Gojo_Rotate;
+    private readonly InputAction m_Gojo_Shoot;
     public struct GojoActions
     {
         private @InputActionsGojo m_Wrapper;
         public GojoActions(@InputActionsGojo wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Gojo_Move;
         public InputAction @Rotate => m_Wrapper.m_Gojo_Rotate;
+        public InputAction @Shoot => m_Wrapper.m_Gojo_Shoot;
         public InputActionMap Get() { return m_Wrapper.m_Gojo; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -338,6 +361,9 @@ public partial class @InputActionsGojo: IInputActionCollection2, IDisposable
             @Rotate.started += instance.OnRotate;
             @Rotate.performed += instance.OnRotate;
             @Rotate.canceled += instance.OnRotate;
+            @Shoot.started += instance.OnShoot;
+            @Shoot.performed += instance.OnShoot;
+            @Shoot.canceled += instance.OnShoot;
         }
 
         private void UnregisterCallbacks(IGojoActions instance)
@@ -348,6 +374,9 @@ public partial class @InputActionsGojo: IInputActionCollection2, IDisposable
             @Rotate.started -= instance.OnRotate;
             @Rotate.performed -= instance.OnRotate;
             @Rotate.canceled -= instance.OnRotate;
+            @Shoot.started -= instance.OnShoot;
+            @Shoot.performed -= instance.OnShoot;
+            @Shoot.canceled -= instance.OnShoot;
         }
 
         public void RemoveCallbacks(IGojoActions instance)
@@ -369,5 +398,6 @@ public partial class @InputActionsGojo: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnRotate(InputAction.CallbackContext context);
+        void OnShoot(InputAction.CallbackContext context);
     }
 }
