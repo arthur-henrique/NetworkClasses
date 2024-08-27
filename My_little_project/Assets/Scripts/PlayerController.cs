@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -32,11 +33,6 @@ public class PlayerController : NetworkBehaviour
 
         shoot.performed -= OnShoot;  // Unsubscribe to avoid memory leaks
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
@@ -67,6 +63,15 @@ public class PlayerController : NetworkBehaviour
 
         ShootBulletServerRpc();  // Trigger the bullet spawn on the server
     }
+    [ClientRpc]
+    public void PontuarClientRpc()
+    {
+        if(IsOwner)
+        {
+            UIManager.instance.RaiseScore();
+        }
+    }
+    
 
     [ServerRpc]
     private void ShootBulletServerRpc()
@@ -74,9 +79,10 @@ public class PlayerController : NetworkBehaviour
         GameObject bulletInstance = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
         NetworkObject networkObject = bulletInstance.GetComponent<NetworkObject>();
 
-        if (networkObject != null)
+        //if (networkObject != null)
         {
+            bulletInstance.GetComponent<Bullet>().playerGameObject = gameObject;
             networkObject.Spawn();  // Spawn bullet across the network
         }
     }
-}
+    }

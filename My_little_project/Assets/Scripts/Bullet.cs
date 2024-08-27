@@ -1,5 +1,6 @@
 using System.Collections;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bullet : NetworkBehaviour
@@ -8,13 +9,25 @@ public class Bullet : NetworkBehaviour
     public float maxLifeSpan = 5f;  // Maximum lifespan before the bullet is destroyed
 
     private float lifeSpan;
-
+    public GameObject playerGameObject;
     private void OnEnable()
     {
         lifeSpan = 0f;
         StartCoroutine(Movement());
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!IsHost) return;
+        if (other.CompareTag("Player") && other.gameObject != playerGameObject)
+        {
+            Debug.Log("Shot");
+            playerGameObject.GetComponent<PlayerController>().PontuarClientRpc();
+            Destroy(gameObject);
+            
+        }
+    }
+    
     IEnumerator Movement()
     {
         while (lifeSpan < maxLifeSpan)

@@ -6,9 +6,24 @@ using UnityEngine;
 
 public class UIManager : NetworkBehaviour
 {
+
+    public static UIManager instance;
+
     private NetworkVariable<int> playerID = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone);
-    public TMP_Text idText;
-    // Start is called before the first frame update
+    public TMP_Text idText, scoreText;
+
+    public int score = 0;
+
+
+    private void Awake()
+    {
+        if(instance == null)
+            instance = this;
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     public void StartHost()
     {
         NetworkManager.Singleton.StartHost();
@@ -27,8 +42,10 @@ public class UIManager : NetworkBehaviour
         idText.text = string.Format("Client ID: {0}", playerID.Value);
     }
 
-    private void Update()
+    public void RaiseScore()
     {
+        score++;
+        scoreText.text = string.Format("Score: {0}", score);
     }
 
     private IEnumerator CheckPlayers()
