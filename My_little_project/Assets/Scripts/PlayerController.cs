@@ -24,6 +24,7 @@ public class PlayerController : NetworkBehaviour
         shoot.Enable();
 
         shoot.performed += OnShoot;  // Listen for the shoot action
+        Pathfinding.Instance.target = bulletSpawnPoint;
     }
 
     private void OnDisable()
@@ -40,13 +41,14 @@ public class PlayerController : NetworkBehaviour
         if (!IsOwner) return;
         
         transform.Translate(0, 0,
-        move.ReadValue<float>() * 5 * Time.deltaTime);
+        move.ReadValue<float>() * 40 * Time.deltaTime);
         transform.Rotate(0,
             rotate.ReadValue<float>() * 180 * Time.deltaTime, 0);
 
         if (move.ReadValue<float>() != 0)
         {
             animator.SetBool("isMoving", true);
+            //AStarPlayerMovement.Instance.currentIndex = 0;
         }
         else
         {

@@ -29,7 +29,6 @@ public class UIManager : NetworkBehaviour
         NetworkManager.Singleton.StartHost();
         StartCoroutine(CheckPlayers());
 
-
     }
     public void StartClient()
     {
